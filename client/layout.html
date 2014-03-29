@@ -1,3 +1,46 @@
 <template name="layout">
-  {{ yield }}
+  <div role="navigation" class="navbar navbar-default navbar-static-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a href="{{ pathFor 'index' }}" class="navbar-brand">Tut4tat</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="{{ pathFor 'index' }}">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          {{#if currentUser }}
+            <li class="dropdown">
+              <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ currentUser.profile.name }} <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/skills">Edit Skills</a></li>
+                <li><a href="/availability">Update Availability</a></li>
+                <li class="divider"></li>
+                <li><a href="#" class='logout'>Log out</a></li>
+              </ul>
+            </li>
+          {{else}}
+            <li><a href="{{ pathFor 'signup' }}">Sign up</a></li>
+            <li><a href="{{ pathFor 'login' }}">Log in</a></li>
+          {{/if}}
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+  <div class='container'>
+    {{#if error }}
+      <div class='alert alert-danger'>
+        {{ error }}
+      </div>
+    {{/if}}
+    {{> yield }}
+  </div>
 </template>

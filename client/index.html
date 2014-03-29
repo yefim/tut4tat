@@ -1,8 +1,13 @@
 <head>
   <title>Tut4tat</title>
-  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <template name="index">
   <h1>Welcome to Tut4tat</h1>
+  {{#each tutors}}
+    <div>
+      {{ . }}
+    </div>
+  {{/each}}
 </template>
