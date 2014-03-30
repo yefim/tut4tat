@@ -1,0 +1,14 @@
+<template name="calendar">
+  <div class='row'>
+    {{#each weekdays}}
+      <div class='col-md-1 day'>
+        {{ . }}
+        <div>
+          {{#each ../hours }}
+          <div class='hour {{isSelected ../../availability value .. }}' data-hour="{{ value }}" data-weekday="{{ .. }}">{{ display }}</div>
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</template>

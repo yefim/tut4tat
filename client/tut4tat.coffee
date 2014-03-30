@@ -13,6 +13,12 @@ $.fn.serializeObject = ->
       o[@name] = @value or ""
   return o
 
+pluralize = (count, word) ->
+  if count is 1 then "#{count} #{word}" else "#{count} #{word}s"
+
+getTimestamp = ({hour, weekday}) ->
+  return Date.now()
+
 Template.layout.events
   'click .logout': ->
     Session.set "message", "Logged out successfully."
@@ -23,6 +29,7 @@ Template.layout.events
 Template.layout.helpers
   error: -> Session.get "error"
   message: -> Session.get "message"
+  pluralize: pluralize
 
 Template.login.events
   'submit .login-form': (e) ->
@@ -78,9 +85,9 @@ Template.skills.events
     else
       Router.go "index"
 
-Template.availability.helpers
-  isSelected: (hour, weekday) ->
-    selected = _.some Meteor.user()?.profile?.availability, (a) ->
+Template.calendar.helpers
+  isSelected: (availability, hour, weekday) ->
+    selected = _.some availability, (a) ->
       return hour == a.hour and weekday == a.weekday
     if selected then 'selected' else ''
 
@@ -106,5 +113,38 @@ Template.availability.events
 
     Meteor.users.update Meteor.userId(), {$set: {"profile.availability": availability}}
     Session.set "message", "Availability saved successfully."
+    setTimeout (-> Session.set "message"), 2000
+    Router.go "index"
+
+Template.user.helpers
+  currentUserHours: -> Session.get "currentUserHours"
+  pluralize: pluralize
+
+Template.user.events
+  'click .hour': (e) ->
+    if $(e.target).hasClass("selected")
+      if $(e.target).hasClass "scheduled"
+        Session.set "currentUserHours", Session.get("currentUserHours") + 1
+        $(e.target).toggleClass "scheduled"
+      else if Session.get("currentUserHours") > 0
+        Session.set "currentUserHours", Session.get("currentUserHours") - 1
+        $(e.target).toggleClass "scheduled"
+  'click .book': (e) ->
+    e.preventDefault()
+    scheduled = $('.hour.scheduled').map (i, e) ->
+      {
+        hour: $(e).data('hour')
+        weekday: $(e).data('weekday')
+      }
+    scheduled = scheduled.toArray()
+
+    Meteor.users.update Meteor.userId(), {$inc: {"profile.hours": -scheduled.length}}
+    # should I find continuous intervals and book as one session?
+    for session in scheduled
+      Sessions.insert
+        timestamp: getTimestamp session
+        tutee: Meteor.userId()
+        tutor: Session.get("userId")
+    Session.set "message", "Tutor was booked successfully."
     setTimeout (-> Session.set "message"), 2000
     Router.go "index"

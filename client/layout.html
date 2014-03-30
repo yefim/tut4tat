@@ -18,6 +18,7 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
           {{#if currentUser }}
+          <li><h5 class='navbar-text'><span class='label label-primary'>{{ pluralize currentUser.profile.hours 'hour' }}</span></h5></li>
             <li class="dropdown">
               <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ currentUser.profile.name }} <b class="caret"></b></a>
               <ul class="dropdown-menu">

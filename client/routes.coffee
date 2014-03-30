@@ -1,3 +1,15 @@
+getHour = (h) ->
+  if h >= 12
+    h -= 12
+    d = "pm"
+  else
+    d = "am"
+  if h == 0
+    h = 12
+  return h + d
+HOURS = ({value: h, display: getHour h} for h in [0..23])
+WEEKDAYS = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
+
 Router.configure
   layoutTemplate: 'layout'
   notFoundTemplate: 'notFound'
@@ -37,20 +49,11 @@ Router.map ->
     path: "/availability"
     template: "availability"
     data: ->
-      getHour = (h) ->
-        if h >= 12
-          h -= 12
-          d = "pm"
-        else
-          d = "am"
-        if h == 0
-          h = 12
-        return h + d
-      hours = ({value: h, display: getHour h} for h in [0..23])
       {
         signup: @params.signup is "true"
-        weekdays: [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
-        hours: hours
+        availability: Meteor.user()?.profile?.availability
+        weekdays: WEEKDAYS
+        hours: HOURS
       }
 
   @route "session",
@@ -61,4 +64,15 @@ Router.map ->
   @route "user",
     path: "/u/:_id"
     template: "user"
-    data: -> Meteor.users.findOne(_id: @params._id)
+    before: ->
+      Session.set "error" # clear error
+      Session.set "currentUserHours", Meteor.user()?.profile?.hours or 0
+    data: ->
+      Session.set "userId", @params._id
+      user = Meteor.users.findOne(_id: @params._id)
+      {
+        user: user
+        weekdays: WEEKDAYS
+        hours: HOURS
+        availability: user?.profile?.availability
+      }

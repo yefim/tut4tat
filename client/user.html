@@ -1,4 +1,7 @@
 <template name="user">
-  <h1>{{ profile.name }}</h1>
-  <button type='button' class='btn btn-default'>Book this tutor</button>
+  <h1>{{ user.profile.name }}</h1>
+  <h2>Select the time slots you would like to be tutored.</h2>
+  <h3>You have {{ pluralize currentUserHours 'hour' }} to book tutors.</h3>
+  {{> calendar }}
+  <button type='button' class='btn btn-default book'>Book</button>
 </template>
