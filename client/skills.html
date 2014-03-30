@@ -1,3 +1,21 @@
 <template name="skills">
   Please add yo skills
+  {{#if signup}}
+    <a href="{{ pathFor 'index' }}" class='btn btn-default skip'>Skip to start getting tutored</a>
+  {{/if}}
+  <form class='skills-form'>
+    <div>
+      {{#each skills}}
+        <label class="checkbox-inline">
+          <input type="checkbox" name="skills" checked={{ isChecked . }} value="{{ . }}"> {{ . }}
+        </label>
+      {{/each}}
+    </div>
+    <input type='hidden' name='signup' value='{{ signup }}'>
+    {{#if signup}}
+      <button type="submit" class="btn btn-default continue" name="action" value="continue">Continue</button>
+    {{else}}
+      <button type="submit" class="btn btn-default save" name="action" value="save">Save</button>
+    {{/if}}
+  </form>
 </template>

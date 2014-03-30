@@ -41,6 +41,11 @@
         {{ error }}
       </div>
     {{/if}}
+    {{#if message }}
+      <div class='alert alert-success'>
+        {{ message }}
+      </div>
+    {{/if}}
     {{> yield }}
   </div>
 </template>

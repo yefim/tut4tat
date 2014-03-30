@@ -7,7 +7,9 @@
   <h1>Welcome to Tut4tat</h1>
   {{#each tutors}}
     <div>
-      {{ . }}
+      <a href="{{ pathFor 'user' _id=this._id }}">
+        {{ profile.name }}
+      </a>
     </div>
   {{/each}}
 </template>

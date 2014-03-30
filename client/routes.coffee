@@ -9,7 +9,10 @@ Router.map ->
   @route "index",
     path: "/"
     template: "index"
-    data: -> {}
+    data: ->
+      tutors = Meteor.users.find()
+      # Meteor.users.find({skills: {$existing: true}, availability: {$existing: true}})
+      {tutors}
 
   @route "login",
     path: "/login"
@@ -24,14 +27,38 @@ Router.map ->
   @route "skills",
     path: "/skills"
     template: "skills"
-    data: -> {}
+    data: ->
+      {
+        signup: @params.signup is "true"
+        skills: [ "Math", "Computer Science", "English", "French", "Spanish" ]
+      }
 
   @route "availability",
     path: "/availability"
     template: "availability"
-    data: -> {}
+    data: ->
+      getHour = (h) ->
+        if h >= 12
+          h -= 12
+          d = "pm"
+        else
+          d = "am"
+        if h == 0
+          h = 12
+        return h + d
+      hours = ({value: h, display: getHour h} for h in [0..23])
+      {
+        signup: @params.signup is "true"
+        weekdays: [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
+        hours: hours
+      }
 
   @route "session",
-    path: "/t/:id"
+    path: "/t/:_id"
     template: "session"
     data: -> {}
+
+  @route "user",
+    path: "/u/:_id"
+    template: "user"
+    data: -> Meteor.users.findOne(_id: @params._id)
